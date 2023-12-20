@@ -1,6 +1,6 @@
 import {request} from "@/utils";
 import { createSlice } from "@reduxjs/toolkit";
-
+import { setToken as _setToken } from "@/utils";
 
 const userStore = createSlice({
     name: "user",
@@ -11,7 +11,8 @@ const userStore = createSlice({
         setToken(state,action){
             console.log("payload",action.payload);
             state.token = action.payload
-            localStorage.setItem('token_key', action.payload)
+            // localStorage.setItem('token_key', action.payload)
+            _setToken(action.payload)
         }
     }
 })
