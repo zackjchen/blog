@@ -1,14 +1,20 @@
-import { Button, Input, Form, Card } from "antd"
+import { Button, Input, Form, Card, message } from "antd"
 import "./index.scss"
 import logo from "@/assets/logo.png"
+import { useDispatch } from "react-redux";
+import { featchLogin } from "@/store/modules/user";
+import { useNavigate } from "react-router-dom";
 
 
 const Login = ()=>{
-    const onFinish = (params) => {
-        console.log('Success:', params);
-      };
+    const navgate = useNavigate()
+    const dispath = useDispatch()
+    const onFinish = async (params) => {
+        console.log(params);
+        await dispath(featchLogin(params, navgate, message))
+    };
     const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+        message.error("请重试...")
     };
 
 

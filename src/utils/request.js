@@ -4,7 +4,7 @@
 //  3. 请求拦截器/响应拦截器
 import axios from "axios";
 const request = axios.create({
-    baseURL: 'https://localhost:3000/',
+    baseURL: 'http://localhost:3001/',
     timeout: 1000,
   });
 
