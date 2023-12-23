@@ -1,0 +1,27 @@
+.footer{
+    text-align: center;
+    background-color: white;
+}
+.menu{
+    flex: 1;
+    min-width: 0;
+}
+
+main nav {
+    display: none;
+}
+.content{
+        padding: 0,
+}
+
+.breadcrumb{
+    margin: 16px 0;
+    // padding-top: 0;
+}
+
+.reactlayout{
+        padding: 24px 0;
+        // background: colorBgContainer;
+        // borderRadius: borderRadiusLG;
+        background-color: white;
+}

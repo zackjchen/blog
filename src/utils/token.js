@@ -11,6 +11,7 @@ function getToken(){
 }
 
 function removeToken(){
+    console.log("移除token");
     localStorage.removeItem(TOKENKEY)
 }
 
