@@ -1,6 +1,9 @@
-import {removeToken, request} from "@/utils";
+import {removeToken} from "@/utils";
 import { createSlice } from "@reduxjs/toolkit";
 import { setToken as _setToken } from "@/utils";
+import { loginAPI,getProfileAPI } from "@/apis/user";
+
+
 
 const userStore = createSlice({
     name: "user",
@@ -37,7 +40,9 @@ const userReducer = userStore.reducer
 const featchLogin =  (loginForm, navgate, message)=>{
     return async (dispath)=>{
         try{
-            const res = await request.post("/user/login", loginForm)
+            // const res = await request.post("/user/login", loginForm)
+            const res = await loginAPI(loginForm)
+            console.log(res);
             const data = JSON.parse(res.data)
             if(data.status_code === 200){
                 dispath(setToken(data.token))
@@ -58,9 +63,8 @@ const featchLogin =  (loginForm, navgate, message)=>{
 //  获取个人信息的异步方法
 const featchUserInfo =  (navgate)=>{
     return async (dispath)=>{
-            request.get('/user/profile').then(
+            getProfileAPI().then(
                 (data)=>{
-                    console.log(data.data);
                     dispath(setUserInfo(JSON.parse(data.data)))
                 }
             ).catch(

@@ -46,7 +46,10 @@ const LayoutInner = () => {
 
   // 点击二级标题
   function handleH2(key){
-    console.log("二级标题 click",key);
+    if(key==="12"){
+      console.log("二级标题 click",key);
+      navgate("/system/publish")
+    }
 
   }
 
@@ -139,7 +142,7 @@ const LayoutInner = () => {
     const router_map = {
       1 : "/system/home",
       2 : "/system/article",
-      3 : "/system/publish",
+      3 : "/system",
     }
     // console.log("key",router_map[key]);
 
@@ -158,7 +161,6 @@ const LayoutInner = () => {
       }),
     };
   });
-
 
 
 
@@ -212,6 +214,7 @@ const LayoutInner = () => {
             style={{
               margin: '16px 0',
             }}
+            // items={[{title:"aaa"}]}
           >
           </Breadcrumb>
           <Content

@@ -7,6 +7,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AuthRoute from "@/components/AuthRoute"
 import Article from "@/pages/Article";
 import Publish from "@/pages/Publish";
+import RichTextEditor from "@/components/RichTextEditor";
 
 
 const router = createBrowserRouter(
@@ -36,7 +37,15 @@ const router = createBrowserRouter(
           {
             path: "/system/publish",
             element: <Publish/>
-          }
+          },
+          {
+            path: "/system/editor",
+            element: <RichTextEditor/>
+          },
+          // {
+          //   path: "/system/test",
+          //   element: <EditorTest/>
+          // },
         ]
       }
     ],

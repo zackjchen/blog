@@ -2,8 +2,9 @@ import * as echarts from 'echarts';
 import { useEffect, useRef } from 'react';
 
 
-const BarChart = () => {
+const BarChart = (params) => {
     const barchart = useRef(null)
+    console.log(params);
     useEffect(()=>{
         // 1.需要一个dom节点渲染
         // const chartDom = document.getElementById('barchart');
@@ -13,6 +14,9 @@ const BarChart = () => {
 
         // 3.图表参数
         const option = {
+            title:{
+                text: params.title
+            },
             xAxis: {
                 type: 'category',
                 data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -30,7 +34,7 @@ const BarChart = () => {
         option && myChart.setOption(option);
 
         },
-        []
+        [params.title]
     )
     return (
         <div id="barchart" ref={barchart} style={{width:'500px',height:"400px"}}></div>

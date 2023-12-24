@@ -1,0 +1,32 @@
+.ant-card-head{
+    .ant-card-head-wrapper{
+        height: 100%;
+        width: 100%;
+        div{
+            nav{
+                display: block;
+                ol{
+                    height: 100%;
+                    line-height: 100%;
+
+                    li{
+                        height: 40px;
+                        line-height: 40px;
+                        span,a{
+                            height: 40px;
+                            line-height: 40px;
+                        }
+                    }
+                }
+
+                
+            }
+        }
+    }
+}
+
+
+  
+.ql-editor{
+    min-height: 300px;
+}
