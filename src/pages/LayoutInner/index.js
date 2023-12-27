@@ -50,6 +50,10 @@ const LayoutInner = () => {
       console.log("二级标题 click",key);
       navgate("/system/publish")
     }
+    if(key==="11"){
+      console.log("二级标题 click",key);
+      navgate("/system/articles")
+    }
 
   }
 

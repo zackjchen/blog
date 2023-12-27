@@ -8,6 +8,7 @@ import AuthRoute from "@/components/AuthRoute"
 import Article from "@/pages/Article";
 import Publish from "@/pages/Publish";
 import RichTextEditor from "@/components/RichTextEditor";
+import ArticleList from "@/pages/ArticleList";
 
 
 const router = createBrowserRouter(
@@ -42,10 +43,10 @@ const router = createBrowserRouter(
             path: "/system/editor",
             element: <RichTextEditor/>
           },
-          // {
-          //   path: "/system/test",
-          //   element: <EditorTest/>
-          // },
+          {
+            path: "/system/articles",
+            element: <ArticleList/>
+          },
         ]
       }
     ],

@@ -2,45 +2,51 @@ import { Breadcrumb, Button, Card, Form, Input, Radio, Select, Space, Upload } f
 import "./index.scss"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useEffect, useState } from "react";
-import { createArticleAPI, getChannelAPI } from "@/apis/article";
+import { useState } from "react";
+import { createArticleAPI } from "@/apis/article";
 import { PlusOutlined } from '@ant-design/icons';
+import useChannelList from "@/hooks/useChannel";
 
 const {Option} = Select
 
 
 export default function Publish(){
-    // 获取频道列表
-    const [channelList, setChannelList] = useState([])
-    useEffect(
-        ()=>{
-            // 1。封装函数，调用接口
-            const getChannelList =  async ()=>{
-                const res = await getChannelAPI()
-                setChannelList(JSON.parse(res.data))
-            }
-            // 调用函数
-            getChannelList()
-        },[]
-    )
+
+    const {channelList} = useChannelList()
+    // 上传回调
+    const [imageList, setImageList] = useState([])
+    function onChange(data){
+        setImageList(data.fileList)
+    }
 
     // 提交表单
     function onFinish(formValue){
-        console.log(formValue);
-        const {title, category,content} = formValue
+        const {title, category, content, image_type} = formValue
+        console.log(imageList);
+
         // 格式化收集到的数据
         const data= {
             title: title,
             content: content,
             cover:{
-                article_type: 0,
-                images: [{a: "123"}]
+                image_type: image_type, //表示传多少张图片
+                images: imageList.map(item=>item.response.data)
             },
             category: category
         }
         // 调用POST发起请求
+        console.log(data);
         createArticleAPI(data)
     }
+
+
+
+    // 封面传多少图片类型
+    const [imageType, setImageType] = useState(0)
+    function onTypeChange(e){
+        setImageType(e.target.value)
+    }
+
     return (
         <div className="publish">
             <Card 
@@ -54,7 +60,7 @@ export default function Publish(){
                 <Form
                 labelCol={{span: 4}}
                 wrapperCol={{span: 16}}
-                initialValues={{type: 1}}
+                initialValues={{image_type: 0}}
                 onFinish={onFinish}
                 >
                     <Form.Item
@@ -62,7 +68,7 @@ export default function Publish(){
                         name={"title"}
                         rules={[{required: true, message:"请输入文章标题"}]}
                     >
-                        <Input placeholder="请输入文章标题" style={{width: 400}}></Input>
+                        <Input placeholder="请输入文章标题" style={{width: 400}} value={""}></Input>
                     </Form.Item>
 
                     <Form.Item
@@ -77,23 +83,30 @@ export default function Publish(){
                         </Select>
                     </Form.Item>
                     <Form.Item label="封面">
-                        <Form.Item name="article_type">
-                            <Radio.Group>
+                        <Form.Item name="image_type">
+                            <Radio.Group onChange={onTypeChange}>
                                 <Radio value={1}>单图</Radio>
                                 <Radio value={3}>三图</Radio>
                                 <Radio value={0}>无图</Radio>
                             </Radio.Group>
                         </Form.Item>
+                    {
+                        imageType>0 && 
                         <Upload
+                        // 选择文件框的样式
                         listType="picture-card"
-                        showUploadList
-                        action={""}
+                        // 显示上传的图片
+                        showUploadList 
+                        action={"http://localhost:3001/articles/upload"}
                         name="image"
+                        onChange={onChange}
+                        maxCount={imageType}
                         >
                             <div style={{marginTop: 8}}>
                                 <PlusOutlined/>
                             </div>
                         </Upload>
+                    }
                     </Form.Item>
                     
 
