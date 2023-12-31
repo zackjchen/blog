@@ -16,7 +16,7 @@ const request = axios.create({
     // 注入token
     // 
     const token = getToken()
-    console.log("aaaa",token);
+    // console.log("aaaa",token);
     if (token){
       config.headers.Authorization = `Bearer ${token}`
     }

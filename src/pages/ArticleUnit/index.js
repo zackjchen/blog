@@ -1,10 +1,11 @@
-import { Table, Tag, Space, Card,Button } from "antd";
-// import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
+import { Table, Tag, Space, Card,Button,Popconfirm } from "antd";
+import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
 // import img404 from '@/assets/error.png'
-import { getArticlesAPI } from "@/apis/article";
+import { deleteArticlesAPI, getArticlesAPI } from "@/apis/article";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const ArticleUnit = ()=> {
+const ArticleUnit = (params)=> {
     // const data = [{
     //     id:"8218",
     //     comtent_count:"0",
@@ -20,17 +21,16 @@ const ArticleUnit = ()=> {
 
        // 获取文章列表
     const [articles,setArticles] = useState([])
+    const navgate = useNavigate()
     useEffect(()=>{
            async function get_articles(){
-               const res = await getArticlesAPI({})
-               console.log(res.data);
-               setArticles(JSON.parse(res.data).data)
+               const res = await getArticlesAPI(params.reqData)
+               setArticles(res.data.data)
 
            }
            get_articles()
-       },[])
-
-    console.log("aaa",articles);
+       },[params.reqData])
+    console.log(articles);
     const columns = [
         {
           title: '封面',
@@ -82,16 +82,50 @@ const ArticleUnit = ()=> {
             key: 'action',
             render: (_, record) => (
               <Space size="middle">
-                <Button>编辑</Button>
-                <Button>删除</Button>
+                <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={()=>{navgate(`/system/publish?${record.id}`)}}></Button>
+                <Popconfirm
+                    title="Delete the article"
+                    description="Are you sure to delete this article?"
+                    onConfirm={()=>onConfirm(record)}
+                    // onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button type="primary" shape="circle" icon={<DeleteOutlined />} danger></Button>
+                </Popconfirm>
               </Space>
             ),
           },
-      ];
+    ];
+
+    const onConfirm = async (data)=>{
+        console.log(data.id);
+        // 这里调取删除文章接口
+        await deleteArticlesAPI(data.id).then(
+            (data)=>{console.log(data.data);}
+        )
+        params.setReqData({
+            ...params.reqData
+        })
+    }
+
+    const onPageChange = (page)=>{
+        // 点击页号的动作
+        params.setReqData({
+            ...params.reqData,
+            page: page.current
+        })
+    }
     return (
         <div>
             <Card title={`根据条件查询到 ${articles.length} 条结果`}>
-                <Table rowKey={"id"} columns={columns} dataSource={articles}></Table>
+                <Table rowKey={"id"} columns={columns} dataSource={articles} pagination={{
+                    total: articles.length,
+                    pageSize: params.reqData.per_page,
+                    // onChange: onPageChange
+                }} 
+                onChange={onPageChange}
+                ></Table>
             </Card>
         </div>
     )

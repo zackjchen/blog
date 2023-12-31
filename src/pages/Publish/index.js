@@ -16,13 +16,19 @@ export default function Publish(){
     // 上传回调
     const [imageList, setImageList] = useState([])
     function onChange(data){
+        console.log(data);
         setImageList(data.fileList)
     }
 
     // 提交表单
     function onFinish(formValue){
         const {title, category, content, image_type} = formValue
-        console.log(imageList);
+        const images_paths = []
+        for( let i in imageList){
+            for(let j in imageList[i].response.data){
+                images_paths.push( imageList[i].response.data[j])
+            }
+        }
 
         // 格式化收集到的数据
         const data= {
@@ -30,15 +36,15 @@ export default function Publish(){
             content: content,
             cover:{
                 image_type: image_type, //表示传多少张图片
-                images: imageList.map(item=>item.response.data)
+                images: images_paths
             },
             category: category
         }
         // 调用POST发起请求
-        console.log(data);
         createArticleAPI(data)
-    }
 
+
+    }
 
 
     // 封面传多少图片类型
@@ -82,7 +88,7 @@ export default function Publish(){
                             {channelList.map(item=> <Option key={item} value={item}>{item}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="封面">
+                    <Form.Item label="封面" name="fengmian">
                         <Form.Item name="image_type">
                             <Radio.Group onChange={onTypeChange}>
                                 <Radio value={1}>单图</Radio>

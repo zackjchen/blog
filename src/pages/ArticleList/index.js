@@ -8,6 +8,7 @@ import { Card, Breadcrumb, Form, Radio, DatePicker, Select, Button } from "antd"
 import locale from "antd/es/date-picker/locale/en_US";
 import ArticleUnit from "../ArticleUnit";
 import useChannelList from "@/hooks/useChannel";
+import { useState } from "react";
 
 
 
@@ -15,8 +16,31 @@ const {Option} = Select
 const {RangePicker} = DatePicker
 export default function ArticleList(){
     const {channelList} = useChannelList()
- 
+    
+    // 筛选功能
+    // 1.准备参数
+    const [reqData, setReqData] = useState({
+        status: "",
+        category: "",
+        begin_puldate: "",
+        end_pubdate: "",
+        page: 1,
+        per_page: 2
 
+    })
+
+    // 获取当前的筛选数据
+    const onFinish = (formValue)=>{
+        console.log(formValue);
+        // 把表单数据放到状态数据中去
+        setReqData({
+            ...reqData,
+            category: formValue.category,
+            status: formValue.status,
+            begin_puldate: formValue.date[0].format("YYYY-MM-DD"),
+            end_pubdate: formValue.date[1].format("YYYY-MM-DD")
+        })
+    }
     return (
     <div>
         <Card
@@ -31,7 +55,7 @@ export default function ArticleList(){
         }
         style={{marginBottom:20, height:"330px"}}
         >
-            <Form initialValues={{status:null}}>
+            <Form initialValues={{status:0}} onFinish={onFinish}>
                 <Form.Item label="状态" name="status">
                     <Radio.Group>
                         <Radio value={0}>全部</Radio>
@@ -39,7 +63,7 @@ export default function ArticleList(){
                         <Radio value={2}>审核通过</Radio>
                     </Radio.Group>
                 </Form.Item>
-                <Form.Item label="频道" name={"channel_id"}>
+                <Form.Item label="频道" name={"category"}>
                     <Select placeholder="请选择文章频道"
                     initialvalues={{article_type:"Rust"}}
                     style={{width:120}}
@@ -51,13 +75,13 @@ export default function ArticleList(){
                 <Form.Item label="日期" name={"date"}>
                     <RangePicker locale={locale}></RangePicker>
                 </Form.Item>
-                <Form.Item>
+                <Form.Item label="查询" name={"query"}>
                     <Button type="primary" htmlType="submit" style={{margin:10}} >查询</Button>
                 </Form.Item>
             </Form>
             
         </Card>
-        <ArticleUnit/>
+        <ArticleUnit reqData={reqData} setReqData={setReqData} />
     </div>
     )
 }
