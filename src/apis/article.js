@@ -33,3 +33,10 @@ export function deleteArticlesAPI(id){
         method: "POST",
     })
 }
+
+// 获取文章详情
+export function getArticleById(id){
+    return request({
+        url:`articles/detail/${id}`
+    })
+}

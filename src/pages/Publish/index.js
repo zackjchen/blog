@@ -2,10 +2,11 @@ import { Breadcrumb, Button, Card, Form, Input, Radio, Select, Space, Upload } f
 import "./index.scss"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useState } from "react";
-import { createArticleAPI } from "@/apis/article";
+import { useEffect, useState } from "react";
+import { createArticleAPI, getArticleById } from "@/apis/article";
 import { PlusOutlined } from '@ant-design/icons';
 import useChannelList from "@/hooks/useChannel";
+import { useSearchParams } from "react-router-dom";
 
 const {Option} = Select
 
@@ -42,8 +43,6 @@ export default function Publish(){
         }
         // 调用POST发起请求
         createArticleAPI(data)
-
-
     }
 
 
@@ -53,13 +52,41 @@ export default function Publish(){
         setImageType(e.target.value)
     }
 
+    // 回填数据,通过search获取id
+    const [searchParams] = useSearchParams()
+    const articleId = searchParams.get("id")
+    // 获取Form实例
+    const [form] = Form.useForm()
+    useEffect(()=>{
+        // 1.通过id获取数据
+        async function getArticleDetail(){
+            const res = await getArticleById(articleId)
+            console.log(res.data);
+            form.setFieldsValue({
+                ...res.data,
+                image_type: res.data.cover.image_type
+            })
+
+            setImageType(res.data.cover.image_type)
+            setImageList(res.data.cover.images.map(url=>{
+                console.log(url);
+                // 这里返回的类型 [{url:"/path"}]
+                return {url: url}
+            }))
+        }
+        // 2.调用实例方法完成回填
+        if (articleId){
+            getArticleDetail()   
+        } 
+    },[articleId,form])
+
     return (
         <div className="publish">
             <Card 
                 title={
                     <Breadcrumb items={[
                         { title: 'home' , href: '/system'},
-                        {title: 'publish'},
+                        {title: `${articleId  ? '编辑':'发布'}文章`},
                     ]}/>
                 }
             >
@@ -68,6 +95,7 @@ export default function Publish(){
                 wrapperCol={{span: 16}}
                 initialValues={{image_type: 0}}
                 onFinish={onFinish}
+                form={form}
                 >
                     <Form.Item
                         label="标题"
@@ -88,7 +116,7 @@ export default function Publish(){
                             {channelList.map(item=> <Option key={item} value={item}>{item}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="封面" name="fengmian">
+                    <Form.Item label="封面" >
                         <Form.Item name="image_type">
                             <Radio.Group onChange={onTypeChange}>
                                 <Radio value={1}>单图</Radio>
@@ -107,6 +135,7 @@ export default function Publish(){
                         name="image"
                         onChange={onChange}
                         maxCount={imageType}
+                        fileList={imageList}
                         >
                             <div style={{marginTop: 8}}>
                                 <PlusOutlined/>

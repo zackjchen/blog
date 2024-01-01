@@ -30,7 +30,6 @@ const ArticleUnit = (params)=> {
            }
            get_articles()
        },[params.reqData])
-    console.log(articles);
     const columns = [
         {
           title: '封面',
@@ -82,7 +81,7 @@ const ArticleUnit = (params)=> {
             key: 'action',
             render: (_, record) => (
               <Space size="middle">
-                <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={()=>{navgate(`/system/publish?${record.id}`)}}></Button>
+                <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={()=>{navgate(`/system/publish?id=${record.id}`)}}></Button>
                 <Popconfirm
                     title="Delete the article"
                     description="Are you sure to delete this article?"
@@ -99,7 +98,6 @@ const ArticleUnit = (params)=> {
     ];
 
     const onConfirm = async (data)=>{
-        console.log(data.id);
         // 这里调取删除文章接口
         await deleteArticlesAPI(data.id).then(
             (data)=>{console.log(data.data);}
